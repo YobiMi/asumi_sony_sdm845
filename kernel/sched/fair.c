@@ -7198,12 +7198,6 @@ retry:
 					schedstat_inc(p->se.statistics.nr_wakeups_fbt_pref_idle);
 					schedstat_inc(this_rq()->eas_stats.fbt_pref_idle);
 
-					trace_sched_find_best_target(p,
-							prefer_idle, min_util,
-							cpu, best_idle_cpu,
-							best_active_cpu,
-							i, -1);
-
 					return i;
 				}
 
@@ -7448,11 +7442,7 @@ retry:
 		target_cpu = *backup_cpu;
 		*backup_cpu = -1;
 	}
-
-	trace_sched_find_best_target(p, prefer_idle, min_util, cpu,
-				     best_idle_cpu, best_active_cpu,
-				     target_cpu, *backup_cpu);
-
+out:
 	schedstat_inc(p->se.statistics.nr_wakeups_fbt_count);
 	schedstat_inc(this_rq()->eas_stats.fbt_count);
 
