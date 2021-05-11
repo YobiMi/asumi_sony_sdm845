@@ -71,3 +71,62 @@ config DRM_MSM_DSI_28NM_8960_PHY
 	help
 	  Choose this option if the 28nm DSI PHY 8960 variant is used on the
 	  platform.
+
+config DRM_MSM_MDP5
+	tristate "MSM MDP5 DRM driver"
+	depends on DRM_MSM
+	default n
+	help
+	  Choose this option if MSM MDP5 revision support is
+	  needed in DRM/KMS. This is not required if sde/mdp4
+	  only target enabled. MDP5 supports DSI and HDMI
+	  displays.
+
+config DRM_MSM_MDP4
+	tristate "MSM MDP4 DRM driver"
+	depends on DRM_MSM
+	default n
+	help
+	  Choose this option if MSM MDP4 revision support is needed in DRM/KMS.
+
+config DRM_MSM_HDCP
+	tristate "HDCP for MSM DRM"
+	depends on DRM_MSM
+	default n
+	help
+	  Chose this option if HDCP supported is needed in DRM/KMS driver.
+
+config DRM_SDE_WB
+	bool "Enable Writeback support in SDE DRM"
+	depends on DRM_MSM
+	default y
+	help
+	  Choose this option for writeback connector support.
+
+config DRM_SDE_EVTLOG_DEBUG
+	bool "Enable event logging in MSM DRM"
+	depends on DRM_MSM
+	help
+          The SDE DRM debugging provides support to enable display debugging
+          features to: dump SDE registers during driver errors, panic
+          driver during fatal errors and enable some display-driver logging
+          into an internal buffer (this avoids logging overhead).
+
+config DRM_SDE_RSC
+	bool "Enable sde resource state coordinator(rsc) driver"
+	depends on DRM_MSM
+	help
+          The SDE DRM RSC provides display Resource State Coordinator support
+          to vote the ab/ib bandwidth for primary display. Each rsc client
+          can vote their active state. Any active request from any client
+          avoids the display core power collapse. A client can also register
+          for display core power collapse events on rsc.
+
+config DRM_SDE_SPECIFIC_PANEL
+	depends on DRM_MSM
+	bool
+	prompt "MDSS Specific panel"
+	default n
+	---help---
+	The MDSS Specific Panel provides support for specific panel driver
+	file.

@@ -79,4 +79,78 @@ msm-$(CONFIG_DRM_MSM_DSI_28NM_PHY) += dsi/pll/dsi_pll_28nm.o
 msm-$(CONFIG_DRM_MSM_DSI_28NM_8960_PHY) += dsi/pll/dsi_pll_28nm_8960.o
 endif
 
+msm_drm-$(CONFIG_DRM_MSM_DSI_STAGING) += dsi-staging/dsi_phy.o \
+				dsi-staging/dsi_pwr.o \
+				dsi-staging/dsi_phy.o \
+				dsi-staging/dsi_phy_hw_v2_0.o \
+				dsi-staging/dsi_phy_hw_v3_0.o \
+				dsi-staging/dsi_phy_timing_calc.o \
+				dsi-staging/dsi_phy_timing_v2_0.o \
+				dsi-staging/dsi_phy_timing_v3_0.o \
+				dsi-staging/dsi_ctrl_hw_cmn.o \
+				dsi-staging/dsi_ctrl_hw_1_4.o \
+				dsi-staging/dsi_ctrl_hw_2_0.o \
+				dsi-staging/dsi_ctrl_hw_2_2.o \
+				dsi-staging/dsi_ctrl.o \
+				dsi-staging/dsi_catalog.o \
+				dsi-staging/dsi_drm.o \
+				dsi-staging/dsi_display.o \
+				dsi-staging/dsi_panel.o \
+				dsi-staging/dsi_clk_manager.o \
+				dsi-staging/dsi_display_test.o
+
+ifeq ($(CONFIG_DRM_SDE_SPECIFIC_PANEL),y)
+msm_drm-$(CONFIG_DRM_MSM_DSI_STAGING) += dsi-staging/dsi_panel_driver.o \
+					dsi-staging/incell.o
+endif
+
+msm_drm-$(CONFIG_DRM_MSM_DSI_PLL) += dsi/pll/dsi_pll.o \
+				dsi/pll/dsi_pll_28nm.o
+
+msm_drm-$(CONFIG_DRM_MSM) += \
+	sde/sde_hw_catalog.o \
+	sde/sde_hw_cdm.o \
+	sde/sde_hw_dspp.o \
+	sde/sde_hw_intf.o \
+	sde/sde_hw_lm.o \
+	sde/sde_hw_ctl.o \
+	sde/sde_hw_util.o \
+	sde/sde_hw_sspp.o \
+	sde/sde_hw_wb.o \
+	sde/sde_hw_rot.o \
+	sde/sde_hw_pingpong.o \
+	sde/sde_hw_top.o \
+	sde/sde_hw_interrupts.o \
+	sde/sde_hw_vbif.o \
+	sde/sde_hw_blk.o \
+	sde/sde_formats.o \
+	sde_power_handle.o \
+	sde/sde_hw_color_processing_v1_7.o \
+	sde/sde_reg_dma.o \
+	sde/sde_hw_reg_dma_v1.o \
+	sde/sde_hw_dsc.o \
+	sde/sde_hw_ds.o
+
+msm_drm-$(CONFIG_DRM_SDE_WB) += sde/sde_wb.o \
+	sde/sde_encoder_phys_wb.o
+
+msm_drm-$(CONFIG_DRM_MSM) += \
+	msm_atomic.o \
+	msm_drv.o \
+	msm_fb.o \
+	msm_gem.o \
+	msm_gem_prime.o \
+	msm_gem_submit.o \
+	msm_gem_shrinker.o \
+	msm_gem_vma.o \
+	msm_gpu.o \
+	msm_iommu.o \
+	msm_smmu.o \
+	msm_perf.o \
+	msm_rd.o \
+	msm_ringbuffer.o \
+	msm_prop.o \
+	msm_fence.o \
+	msm_debugfs.o
+
 obj-$(CONFIG_DRM_MSM)	+= msm.o

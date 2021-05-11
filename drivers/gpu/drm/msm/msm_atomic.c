@@ -59,25 +59,70 @@ static void end_atomic(struct msm_drm_private *priv, uint32_t crtc_mask)
 	spin_unlock(&priv->pending_crtcs_event.lock);
 }
 
-static struct msm_commit *commit_init(struct drm_atomic_state *state)
-{
-	struct msm_commit *c = kzalloc(sizeof(*c), GFP_KERNEL);
-
-	if (!c)
-		return NULL;
-
-	c->dev = state->dev;
-	c->state = state;
-
-	INIT_WORK(&c->work, commit_worker);
-
-	return c;
-}
-
 static void commit_destroy(struct msm_commit *c)
 {
 	end_atomic(c->dev->dev_private, c->crtc_mask);
 	kfree(c);
+}
+
+static inline bool _msm_seamless_for_crtc(struct drm_atomic_state *state,
+			struct drm_crtc_state *crtc_state, bool enable)
+{
+	struct drm_connector *connector = NULL;
+	struct drm_connector_state  *conn_state = NULL;
+	int i = 0;
+	int conn_cnt = 0;
+
+	if (msm_is_mode_seamless(&crtc_state->mode) ||
+		msm_is_mode_seamless_vrr(&crtc_state->adjusted_mode))
+		return true;
+
+	if (msm_is_mode_seamless_dms(&crtc_state->adjusted_mode) && !enable)
+		return true;
+
+	if (!crtc_state->mode_changed && crtc_state->connectors_changed) {
+		for_each_connector_in_state(state, connector, conn_state, i) {
+			if ((conn_state->crtc == crtc_state->crtc) ||
+					(connector->state->crtc ==
+					 crtc_state->crtc))
+				conn_cnt++;
+
+			if (MULTIPLE_CONN_DETECTED(conn_cnt))
+				return true;
+		}
+	}
+
+	return false;
+}
+
+static inline bool _msm_seamless_for_conn(struct drm_connector *connector,
+		struct drm_connector_state *old_conn_state, bool enable)
+{
+	if (!old_conn_state || !old_conn_state->crtc)
+		return false;
+
+	if (!old_conn_state->crtc->state->mode_changed &&
+			!old_conn_state->crtc->state->active_changed &&
+			old_conn_state->crtc->state->connectors_changed) {
+		if (old_conn_state->crtc == connector->state->crtc)
+			return true;
+	}
+
+	if (enable)
+		return false;
+
+	if (msm_is_mode_seamless(&connector->encoder->crtc->state->mode))
+		return true;
+
+	if (msm_is_mode_seamless_vrr(
+			&connector->encoder->crtc->state->adjusted_mode))
+		return true;
+
+	if (msm_is_mode_seamless_dms(
+			&connector->encoder->crtc->state->adjusted_mode))
+		return true;
+
+	return false;
 }
 
 static void msm_atomic_wait_for_commit_done(struct drm_device *dev,

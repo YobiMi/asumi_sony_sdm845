@@ -25,6 +25,19 @@
 
 #define MAX_PLANE	4
 
+/**
+ * Device Private DRM Mode Flags
+ * drm_mode->private_flags
+ */
+/* Connector has interpreted seamless transition request as dynamic fps */
+#define MSM_MODE_FLAG_SEAMLESS_DYNAMIC_FPS	(1<<0)
+/* Transition to new mode requires a wait-for-vblank before the modeset */
+#define MSM_MODE_FLAG_VBLANK_PRE_MODESET	(1<<1)
+/* Request to switch the connector mode */
+#define MSM_MODE_FLAG_SEAMLESS_DMS			(1<<2)
+/* Request to switch the fps */
+#define MSM_MODE_FLAG_SEAMLESS_VRR			(1<<3)
+
 /* As there are different display controller blocks depending on the
  * snapdragon version, the kms support is split out and the appropriate
  * implementation is loaded at runtime.  The kms module is responsible
@@ -75,5 +88,52 @@ struct msm_kms *mdp4_kms_init(struct drm_device *dev);
 struct msm_kms *mdp5_kms_init(struct drm_device *dev);
 int msm_mdss_init(struct drm_device *dev);
 void msm_mdss_destroy(struct drm_device *dev);
+struct msm_kms *mdp5_kms_init(struct drm_device *dev);
+#else
+static inline int msm_mdss_init(struct drm_device *dev)
+{
+	return 0;
+}
+static inline void msm_mdss_destroy(struct drm_device *dev)
+{
+}
+static inline struct msm_kms *mdp5_kms_init(struct drm_device *dev)
+{
+	return NULL;
+}
+#endif
+struct msm_kms *sde_kms_init(struct drm_device *dev);
+
+/**
+ * Mode Set Utility Functions
+ */
+static inline bool msm_is_mode_seamless(const struct drm_display_mode *mode)
+{
+	return (mode->flags & DRM_MODE_FLAG_SEAMLESS);
+}
+
+static inline bool msm_is_mode_seamless_dms(const struct drm_display_mode *mode)
+{
+	return mode ? (mode->private_flags & MSM_MODE_FLAG_SEAMLESS_DMS)
+		: false;
+}
+
+static inline bool msm_is_mode_dynamic_fps(const struct drm_display_mode *mode)
+{
+	return ((mode->flags & DRM_MODE_FLAG_SEAMLESS) &&
+		(mode->private_flags & MSM_MODE_FLAG_SEAMLESS_DYNAMIC_FPS));
+}
+
+static inline bool msm_is_mode_seamless_vrr(const struct drm_display_mode *mode)
+{
+	return mode ? (mode->private_flags & MSM_MODE_FLAG_SEAMLESS_VRR)
+		: false;
+}
+
+static inline bool msm_needs_vblank_pre_modeset(
+		const struct drm_display_mode *mode)
+{
+	return (mode->private_flags & MSM_MODE_FLAG_VBLANK_PRE_MODESET);
+}
 
 #endif /* __MSM_KMS_H__ */
