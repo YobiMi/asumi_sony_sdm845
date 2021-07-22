@@ -97,8 +97,21 @@ void ion_reserve(struct ion_platform_data *data);
  * @dev:		the global ion device
  * @name:		used for debugging
  */
+<<<<<<< HEAD
 struct ion_client *ion_client_create(struct ion_device *dev,
 				     const char *name);
+=======
+struct ion_device {
+	struct miscdevice dev;
+	struct plist_head heaps;
+};
+
+/* refer to include/linux/pm.h */
+struct ion_pm_ops {
+	int (*freeze)(struct ion_heap *heap);
+	int (*restore)(struct ion_heap *heap);
+};
+>>>>>>> 431c7e152639... ion: Remove unneeded rwsem for the heap priority list
 
 /**
  * ion_client_destroy() -  free's a client and all it's handles
@@ -190,8 +203,12 @@ void ion_unmap_kernel(struct ion_client *client, struct ion_handle *handle);
  * @client:	the client
  * @handle:	the handle
  */
+<<<<<<< HEAD
 struct dma_buf *ion_share_dma_buf(struct ion_client *client,
 						struct ion_handle *handle);
+=======
+void ion_add_heap(struct ion_device *idev, struct ion_heap *heap);
+>>>>>>> 431c7e152639... ion: Remove unneeded rwsem for the heap priority list
 
 /**
  * ion_share_dma_buf_fd() - given an ion client, create a dma-buf fd
