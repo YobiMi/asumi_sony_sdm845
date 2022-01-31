@@ -1,4 +1,4 @@
-/* Copyright (c) 2017-2019, The Linux Foundation. All rights reserved.
+/* Copyright (c) 2017-2021, The Linux Foundation. All rights reserved.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 2 and
@@ -697,7 +697,7 @@ static int cam_ife_hw_mgr_acquire_res_ife_out_pixel(
 
 		}
 		ife_out_res->res_type = (enum cam_ife_hw_mgr_res_type)
-			CAM_ISP_RESOURCE_VFE_OUT;
+		CAM_ISP_RESOURCE_VFE_OUT;
 		ife_out_res->res_id = out_port->res_type;
 		ife_out_res->parent = ife_src_res;
 		ife_src_res->child[ife_src_res->num_children++] = ife_out_res;
@@ -1170,7 +1170,8 @@ static int cam_ife_hw_mgr_acquire_res_ife_csid_rdi(
 				goto err;
 			}
 
-			csid_res->res_type = CAM_ISP_RESOURCE_PIX_PATH;
+			csid_res->res_type = (enum cam_ife_hw_mgr_res_type)
+				CAM_ISP_RESOURCE_PIX_PATH;
 			csid_res->res_id = csid_acquire.res_id;
 			csid_res->is_dual_vfe = 0;
 			csid_res->hw_res[0] = csid_acquire.node_res;
