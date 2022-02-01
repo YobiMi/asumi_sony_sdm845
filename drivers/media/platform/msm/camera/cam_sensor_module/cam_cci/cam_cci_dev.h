@@ -202,6 +202,13 @@ enum cam_cci_state_t {
  * @cci_wait_sync_cfg: CCI sync config
  * @cycles_per_us: Cycles per micro sec
  * @payload_size: CCI packet payload size
+ * @irq_status1: Store irq_status1 to be cleared after
+ *               draining FIFO buffer for burst read
+ * @lock_status: to protect changes to irq_status1
+ * @is_burst_read: Flag to determine if we are performing
+ *                 a burst read operation or not
+ * @init_mutex: Mutex for maintaining refcount for attached
+ *              devices to cci during init/deinit.
  */
 struct cci_device {
 	struct v4l2_subdev subdev;
@@ -226,6 +233,9 @@ struct cci_device {
 	uint8_t payload_size;
 	char device_name[20];
 	uint32_t cpas_handle;
+	uint32_t irq_status1;
+	spinlock_t lock_status;
+	bool is_burst_read;
 	struct mutex init_mutex;
 };
 
