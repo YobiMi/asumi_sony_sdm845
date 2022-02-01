@@ -4879,7 +4879,6 @@ int dvb_dmxdev_init(struct dmxdev *dmxdev, struct dvb_adapter *dvb_adapter)
 			&dbgfs_filters_fops);
 
 	return 0;
-}
 
 EXPORT_SYMBOL(dvb_dmxdev_init);
 
